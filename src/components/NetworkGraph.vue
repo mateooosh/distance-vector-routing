@@ -1,7 +1,8 @@
 <template>
   <div class="graph">
     <v-network-graph :nodes="store.state.nodes" :edges="store.state.edges" :configs="config"
-                     v-model:selected-nodes="selectedNodes">
+                     v-model:selected-nodes="selectedNodes" v-model:selected-edges="selectedEdges"
+                     v-model:zoom-level="zoom">
     </v-network-graph>
   </div>
 </template>
@@ -29,6 +30,26 @@ export default {
       }
     })
 
+    const selectedEdges = computed({
+      get() {
+        return store.state.selectedEdges
+      },
+
+      set(newValue) {
+        store.state.selectedEdges = newValue
+      }
+    })
+
+    const zoom = computed({
+      get() {
+        return store.state.zoom
+      },
+
+      set(newValue) {
+        store.state.zoom = newValue
+      }
+    })
+
     const config = defineConfigs({
       node: {
         selectable: true,
@@ -38,10 +59,21 @@ export default {
       },
       edge: {
         selectable: true
+      },
+      view: {
+        // scrollingObjects: true,
+        minZoomLevel: 1,
+        mouseWheelZoomEnabled: false
       }
     })
 
-    return {config, store, state, selectedNodes}
+    return {config, store, state, selectedNodes, selectedEdges, zoom}
   }
 }
 </script>
+
+<style scoped lang="scss">
+.graph {
+  height: 600px;
+}
+</style>

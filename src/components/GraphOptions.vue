@@ -18,10 +18,10 @@
         Edges
       </template>
       <div class="options__buttons">
-        <div class="options__button" :class="{'options__button--active' : false}">
+        <div class="options__button" :class="{'options__button--active' : canAddEdge}" @click="addEdge">
           Add
         </div>
-        <div class="options__button" :class="{'options__button--active' : false}">
+        <div class="options__button" :class="{'options__button--active' : canRemoveEdge}" @click="removeEdge">
           Remove
         </div>
       </div>
@@ -32,10 +32,10 @@
         Zoom
       </template>
       <div class="options__buttons">
-        <div class="options__button" :class="{'options__button--active' : false}">
+        <div class="options__button" :class="{'options__button--active' : true}" @click="zoomIn">
           +
         </div>
-        <div class="options__button" :class="{'options__button--active' : false}">
+        <div class="options__button" :class="{'options__button--active' : canZoomOut}" @click="zoomOut">
           -
         </div>
       </div>
@@ -57,6 +57,12 @@ export default {
 
     const canRemoveNode = computed(() => !!store.state.selectedNodes.length)
 
+    const canAddEdge = computed(() => store.state.selectedNodes.length === 2)
+
+    const canRemoveEdge = computed(() => !!store.state.selectedEdges.length)
+
+    const canZoomOut = computed(() => store.state.zoom > 1)
+
     const addNode = () => {
       store.commit('addNode')
     }
@@ -65,7 +71,35 @@ export default {
       store.commit('removeNode')
     }
 
-    return {store, addNode, removeNode, canRemoveNode}
+    const addEdge = () => {
+      store.commit('addEdge')
+    }
+
+    const removeEdge = () => {
+      store.commit('removeEdge')
+    }
+
+    const zoomIn = () => {
+      store.commit('zoomIn')
+    }
+
+    const zoomOut = () => {
+      store.commit('zoomOut')
+    }
+
+    return {
+      store,
+      addNode,
+      removeNode,
+      addEdge,
+      removeEdge,
+      zoomIn,
+      zoomOut,
+      canRemoveNode,
+      canAddEdge,
+      canRemoveEdge,
+      canZoomOut
+    }
   }
 }
 </script>
@@ -87,6 +121,7 @@ export default {
     border-radius: 4px;
     border: 1px solid #adadad;
     color: #adadad;
+    cursor: not-allowed;
 
     &--active {
       background-color: #0079d0;
