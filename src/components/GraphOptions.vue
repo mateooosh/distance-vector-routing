@@ -1,54 +1,55 @@
 <template>
   <div class="options">
-    <GraphOption>
-      <template #title>
-        Nodes
-      </template>
-      <div class="options__buttons">
-        <div class="options__button options__button--active" @click="addNode">
-          Add
+    <div class="options__top">
+      <GraphOption>
+        <template #title>
+          Nodes
+        </template>
+        <div class="options__buttons">
+          <div class="options__button options__button--active" @click="addNode">
+            Add
+          </div>
+          <div class="options__button" :class="{'options__button--active' : canRemoveNode}" @click="removeNode">
+            Remove
+          </div>
         </div>
-        <div class="options__button" :class="{'options__button--active' : canRemoveNode}" @click="removeNode">
-          Remove
+      </GraphOption>
+      <GraphOption>
+        <template #title>
+          Edges
+        </template>
+        <div class="options__buttons">
+          <div class="options__button" :class="{'options__button--active' : canAddEdge}" @click="addEdge">
+            Add
+          </div>
+          <div class="options__button" :class="{'options__button--active' : canRemoveEdge}" @click="removeEdge">
+            Remove
+          </div>
         </div>
-      </div>
-    </GraphOption>
-    <GraphOption>
-      <template #title>
-        Edges
-      </template>
-      <div class="options__buttons">
-        <div class="options__button" :class="{'options__button--active' : canAddEdge}" @click="addEdge">
-          Add
-        </div>
-        <div class="options__button" :class="{'options__button--active' : canRemoveEdge}" @click="removeEdge">
-          Remove
-        </div>
-      </div>
-    </GraphOption>
+      </GraphOption>
 
-    <GraphOption>
-      <template #title>
-        Zoom
-      </template>
-      <div class="options__buttons">
-        <div class="options__button" :class="{'options__button--active' : true}" @click="zoomIn">
-          +
+      <GraphOption>
+        <template #title>
+          Zoom
+        </template>
+        <div class="options__buttons">
+          <div class="options__button" :class="{'options__button--active' : true}" @click="zoomIn">
+            +
+          </div>
+          <div class="options__button" :class="{'options__button--active' : canZoomOut}" @click="zoomOut">
+            -
+          </div>
         </div>
-        <div class="options__button" :class="{'options__button--active' : canZoomOut}" @click="zoomOut">
-          -
-        </div>
-      </div>
-    </GraphOption>
-
+      </GraphOption>
+    </div>
   </div>
 </template>
 
 <script>
 
-import GraphOption from "@/components/GraphOption";
-import {useStore} from "vuex";
-import {computed} from "vue";
+import GraphOption from "@/components/GraphOption"
+import {useStore} from "vuex"
+import {computed} from "vue"
 
 export default {
   components: {GraphOption},
@@ -106,10 +107,19 @@ export default {
 
 <style scoped lang="scss">
 .options {
-  width: 100%;
-  display: flex;
-  gap: 8px;
   margin: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+
+  &__top {
+    display: flex;
+    gap: 8px;
+  }
 
   &__buttons {
     display: flex;

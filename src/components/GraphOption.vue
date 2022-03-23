@@ -36,7 +36,7 @@ export default {
   background-color: #f2f2f2;
 
   &__title {
-    color: #999;
+    color: #797979;
     font-weight: 700;
     margin-bottom: 8px;
   }

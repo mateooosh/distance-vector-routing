@@ -3,10 +3,22 @@ import {createStore} from 'vuex'
 export default createStore({
   state: {
     nodes: {
-      router1: {name: "Router 1"},
-      router2: {name: "Router 2"},
-      router3: {name: "Router 3"},
-      router4: {name: "Router 4"}
+      router1: {
+        name: "Router 1",
+        color: '#4466cc'
+      },
+      router2: {
+        name: "Router 2",
+        color: '#4466cc'
+      },
+      router3: {
+        name: "Router 3",
+        color: '#4466cc'
+      },
+      router4: {
+        name: "Router 4",
+        color: '#4466cc'
+      }
     },
     nextNodeIndex: 4,
     edges: {

@@ -54,7 +54,11 @@ export default {
       node: {
         selectable: true,
         normal: {
-          radius: 30
+          radius: 30,
+          color: node => node.color
+        },
+        hover: {
+          color: node => node.color
         }
       },
       edge: {
@@ -74,6 +78,7 @@ export default {
 
 <style scoped lang="scss">
 .graph {
-  height: 600px;
+  width: 100%;
+  height: 100vh;
 }
 </style>
