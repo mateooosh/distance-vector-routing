@@ -3,6 +3,9 @@
     <v-network-graph :nodes="store.state.nodes" :edges="store.state.edges" :configs="config"
                      v-model:selected-nodes="selectedNodes" v-model:selected-edges="selectedEdges"
                      v-model:zoom-level="zoom">
+      <template #edge-label="{ edge, ...slotProps }">
+        <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" :config="{fontSize: 14}"/>
+      </template>
     </v-network-graph>
   </div>
 </template>
@@ -10,15 +13,13 @@
 <script>
 import {defineConfigs} from "v-network-graph"
 import {useStore} from "vuex"
-import {computed, reactive} from "vue";
+import {computed} from "vue"
 
 export default {
   setup() {
     const store = useStore()
-
-    const state = reactive({
-      // selectedNodes: []
-    })
+    const ACTIVE = "#01c501"
+    const INACTIVE = "#ff0000"
 
     const selectedNodes = computed({
       get() {
@@ -50,19 +51,50 @@ export default {
       }
     })
 
+    // const nodes = computed({
+    //   get() {
+    //     return store.state.nodes
+    //   },
+    //
+    //   set(newValue) {
+    //     store.state.nodes = newValue
+    //   }
+    // })
+
     const config = defineConfigs({
       node: {
         selectable: true,
         normal: {
+          color: node => node.color,
           radius: 30,
-          color: node => node.color
         },
         hover: {
           color: node => node.color
         }
       },
       edge: {
-        selectable: true
+        selectable: true,
+        normal: {
+          // dasharray: edge =>
+          //     store.state.nodes[edge.source].active && store.state.nodes[edge.target].active ? 4 : 0,
+          // animate: edge => store.state.nodes[edge.source].active && store.state.nodes[edge.target].active
+        },
+        marker: {
+          source: {
+            type: "circle",
+            width: 7,
+            height: 7,
+            margin: 1,
+            color: ([edge]) => (store.state.nodes[edge.source].active ? ACTIVE : INACTIVE),
+          },
+          target: {
+            type: "circle",
+            width: 7,
+            height: 7,
+            margin: 1,
+            color: ([edge]) => (store.state.nodes[edge.target].active ? ACTIVE : INACTIVE),
+          },
+        },
       },
       view: {
         // scrollingObjects: true,
@@ -71,7 +103,7 @@ export default {
       }
     })
 
-    return {config, store, state, selectedNodes, selectedEdges, zoom}
+    return {config, store, selectedNodes, selectedEdges, zoom}
   }
 }
 </script>
@@ -80,5 +112,6 @@ export default {
 .graph {
   width: 100%;
   height: 100vh;
+  overflow: hidden;
 }
 </style>

@@ -2,7 +2,10 @@
   <div class="node-details">
     <div v-for="id in selectedNodes" :key="id">
       <div class="node-details__title">
-        {{nodes[id].name}}
+        <div>{{ nodes[id].name }}</div>
+        <div @click="closeDetails(id)">
+          <BIconXLg class="node-details__close"/>
+        </div>
       </div>
       <div class="node-details__content">
         <div>
@@ -13,6 +16,10 @@
           <div class="node-details__input-title">Color</div>
           <input v-model="nodes[id].color" type="color"/>
         </div>
+        <div>
+          <div class="node-details__input-title">Active</div>
+          <input v-model="nodes[id].active" type="checkbox"/>
+        </div>
       </div>
     </div>
   </div>
@@ -22,12 +29,20 @@
 
 import {computed} from "vue"
 import {useStore} from "vuex"
+import {BIconXLg} from "bootstrap-icons-vue"
 
 export default {
+  components: {
+    BIconXLg
+  },
   setup() {
     const store = useStore()
 
     const showNodeDetails = computed(() => !!store.state.selectedNodes.length)
+
+    const closeDetails = (nodeId) => {
+      store.state.selectedNodes = store.state.selectedNodes.filter(id => id !== nodeId)
+    }
 
     const selectedNodes = computed({
       get() {
@@ -53,7 +68,8 @@ export default {
       showNodeDetails,
       selectedNodes,
       store,
-      nodes
+      nodes,
+      closeDetails
     }
   }
 }
@@ -69,16 +85,10 @@ export default {
   right: 8px;
   padding: 8px 0;
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 
-  //-ms-overflow-style: none;  /* IE and Edge */
-  //scrollbar-width: none;  /* Firefox */
-  //
-  //&::-webkit-scrollbar {
-  //  display: none;
-  //}
-
-  >div {
+  > div {
     width: 300px;
     padding: 16px 24px;
     border-radius: 8px;
@@ -90,6 +100,9 @@ export default {
     color: #797979;
     font-weight: 700;
     margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__content {
@@ -100,6 +113,11 @@ export default {
 
   &__input-title {
     margin-bottom: 4px;
+  }
+
+  &__close {
+    font-size: 20px;
+    cursor: pointer;
   }
 }
 </style>

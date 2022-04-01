@@ -1,6 +1,6 @@
 <template>
   <div class="options">
-    <div class="options__top">
+    <div class="options__sidebar">
       <GraphOption>
         <template #title>
           Nodes
@@ -116,8 +116,9 @@ export default {
   left: 0;
   z-index: 10;
 
-  &__top {
+  &__sidebar {
     display: flex;
+    flex-direction: column;
     gap: 8px;
   }
 
