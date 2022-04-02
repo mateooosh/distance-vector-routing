@@ -130,7 +130,7 @@ export default {
   &__button {
     padding: 8px 16px;
     border-radius: 4px;
-    border: 1px solid #adadad;
+    border: 1px solid #d5d5d5;
     color: #adadad;
     cursor: not-allowed;
 

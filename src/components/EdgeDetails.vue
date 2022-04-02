@@ -1,43 +1,35 @@
 <template>
   <div class="edge-details">
     <div v-for="id in selectedEdges" :key="id">
-      <div class="edge-details__title">
-        <div>{{ "".concat(getNodeName(edges[id].source), ' = ', getNodeName(edges[id].target)) }}</div>
-        <div @click="closeDetails(id)">
-          <BIconXLg class="edge-details__close"/>
-        </div>
-      </div>
-      <div class="edge-details__content">
-        <div>
-          <div class="edge-details__input-title">Weight</div>
-          <input v-model.number="edges[id].label" type="number" min="1"/>
-        </div>
-      </div>
+
+      <FormCollapsePanel :title="getTitle(id)">
+        <van-form>
+          <van-field
+              v-model="edges[id].label"
+              name="=weight"
+              label="Weight"
+              placeholder="Weight"
+              type="number"
+              class="edge-details__field"
+          />
+        </van-form>
+      </FormCollapsePanel>
     </div>
   </div>
 </template>
 
 <script>
-import {BIconXLg} from 'bootstrap-icons-vue'
-import {computed} from "vue"
+import {computed, reactive} from "vue"
 import {useStore} from "vuex"
+import FormCollapsePanel from "@/components/FormCollapsePanel"
 
 export default {
   components: {
-    BIconXLg
+    FormCollapsePanel
   },
+
   setup() {
     const store = useStore()
-
-    const showEdgeDetails = computed(() => !!store.state.selectedEdges.length)
-
-    const getNodeName = (nodeId) => {
-      return store.state.nodes[nodeId].name
-    }
-
-    const closeDetails = (edgeId) => {
-      store.state.selectedEdges = store.state.selectedEdges.filter(id => id !== edgeId)
-    }
 
     const selectedEdges = computed({
       get() {
@@ -59,13 +51,29 @@ export default {
       }
     })
 
+    const showEdgeDetails = computed(() => !!store.state.selectedEdges.length)
+
+    const getNodeName = (nodeId) => {
+      return store.state.nodes[nodeId].name
+    }
+
+    const getTitle = (edgeId) => {
+      return "".concat(getNodeName(store.state.edges[edgeId].source), ' = ', getNodeName(store.state.edges[edgeId].target))
+    }
+
+    const state = reactive({
+      label: '',
+      weight: 0
+    })
+
     return {
       showEdgeDetails,
       selectedEdges,
       store,
       edges,
       getNodeName,
-      closeDetails
+      getTitle,
+      state
     }
   }
 }
@@ -75,44 +83,25 @@ export default {
 .edge-details {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
   position: fixed;
   top: 0;
-  right: 8px;
-  padding: 8px 0;
+  right: 0;
+  padding: 8px;
   height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
 
   > div {
     width: 300px;
-    padding: 16px 24px;
+    padding: 0 8px;
     border-radius: 8px;
-    border: 1px solid #adadad;
-    background-color: #f2f2f2;
+    box-shadow: 0px 0px 7px -3px rgba(66, 68, 90, 1);
+    background-color: white;
   }
 
-  &__title {
-    color: #797979;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__input-title {
-    margin-bottom: 4px;
-  }
-
-  &__close {
-    font-size: 20px;
-    cursor: pointer;
+  &__field {
+    padding: 10px 0;
   }
 }
 </style>

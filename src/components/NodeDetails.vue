@@ -1,48 +1,48 @@
 <template>
   <div class="node-details">
     <div v-for="id in selectedNodes" :key="id">
-      <div class="node-details__title">
-        <div>{{ nodes[id].name }}</div>
-        <div @click="closeDetails(id)">
-          <BIconXLg class="node-details__close"/>
-        </div>
-      </div>
-      <div class="node-details__content">
-        <div>
-          <div class="node-details__input-title">Name</div>
-          <input v-model="nodes[id].name" type="text"/>
-        </div>
-        <div>
-          <div class="node-details__input-title">Color</div>
-          <input v-model="nodes[id].color" type="color"/>
-        </div>
-        <div>
-          <div class="node-details__input-title">Active</div>
-          <input v-model="nodes[id].active" type="checkbox"/>
-        </div>
-      </div>
+     <FormCollapsePanel :title="nodes[id].name">
+       <van-form>
+         <van-field
+             v-model="nodes[id].name"
+             name="=name"
+             label="Name"
+             placeholder="Name"
+             class="node-details__field"
+         />
+         <van-field name="active" label="Active" class="node-details__field">
+           <template #input>
+             <van-switch v-model="nodes[id].active" active-color="#01c501" inactive-color="#ff0000" size="20px"/>
+           </template>
+         </van-field>
+         <van-field name="color" label="Color" class="node-details__field">
+           <template #input>
+             <input v-model="nodes[id].color" type="color"/>
+           </template>
+         </van-field>
+       </van-form>
+     </FormCollapsePanel>
     </div>
   </div>
 </template>
 
 <script>
 
+
 import {computed} from "vue"
 import {useStore} from "vuex"
-import {BIconXLg} from "bootstrap-icons-vue"
+import FormCollapsePanel from "@/components/FormCollapsePanel"
+// import {BIconXLg} from "bootstrap-icons-vue"
 
 export default {
   components: {
-    BIconXLg
+    FormCollapsePanel
+    // BIconXLg
   },
   setup() {
     const store = useStore()
 
     const showNodeDetails = computed(() => !!store.state.selectedNodes.length)
-
-    const closeDetails = (nodeId) => {
-      store.state.selectedNodes = store.state.selectedNodes.filter(id => id !== nodeId)
-    }
 
     const selectedNodes = computed({
       get() {
@@ -69,7 +69,6 @@ export default {
       selectedNodes,
       store,
       nodes,
-      closeDetails
     }
   }
 }
@@ -79,45 +78,25 @@ export default {
 .node-details {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
   position: fixed;
   top: 0;
-  right: 8px;
-  padding: 8px 0;
+  right: 0;
+  padding: 8px;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
 
   > div {
     width: 300px;
-    padding: 16px 24px;
+    padding: 0 8px;
     border-radius: 8px;
-    border: 1px solid #adadad;
-    background-color: #f2f2f2;
+    box-shadow: 0px 0px 7px -3px rgba(66, 68, 90, 1);
+    background-color: white;
   }
 
-  &__title {
-    color: #797979;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__input-title {
-    margin-bottom: 4px;
-  }
-
-  &__close {
-    font-size: 20px;
-    cursor: pointer;
+  &__field {
+    padding: 10px 0;
   }
 }
 </style>

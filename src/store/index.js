@@ -41,7 +41,7 @@ export default createStore({
       state.nextNodeIndex++
       const nodeId = `router${state.nextNodeIndex}`
       const name = `Router${state.nextNodeIndex}`
-      state.nodes[nodeId] = {name, color: '#4466cc'}
+      state.nodes[nodeId] = {name, color: '#4466cc', active: true}
     },
 
     removeNode(state) {
