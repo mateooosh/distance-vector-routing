@@ -4,7 +4,8 @@
                      v-model:selected-nodes="selectedNodes" v-model:selected-edges="selectedEdges"
                      v-model:zoom-level="zoom">
       <template #edge-label="{ edge, ...slotProps }">
-        <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" :config="{fontSize: 14}"/>
+        <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps"
+                      :config="{fontSize: 14}"/>
       </template>
     </v-network-graph>
   </div>
@@ -51,16 +52,6 @@ export default {
       }
     })
 
-    // const nodes = computed({
-    //   get() {
-    //     return store.state.nodes
-    //   },
-    //
-    //   set(newValue) {
-    //     store.state.nodes = newValue
-    //   }
-    // })
-
     const config = defineConfigs({
       node: {
         selectable: true,
@@ -70,18 +61,26 @@ export default {
         },
         hover: {
           color: node => node.color
+        },
+        label: {
+          fontSize: 14,
+          direction: node => node.direction
         }
       },
       edge: {
         selectable: true,
         normal: {
+          color: edge => edge.color,
           // dasharray: edge =>
           //     store.state.nodes[edge.source].active && store.state.nodes[edge.target].active ? 4 : 0,
           // animate: edge => store.state.nodes[edge.source].active && store.state.nodes[edge.target].active
         },
+        hover: {
+          color: edge => edge.color
+        },
         marker: {
           source: {
-            type: "circle",
+            type: 'circle',
             width: 7,
             height: 7,
             margin: 1,

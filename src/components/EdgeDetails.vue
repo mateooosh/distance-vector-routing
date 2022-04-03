@@ -4,13 +4,21 @@
       <FormCollapsePanel :title="getTitle(id)">
         <van-form>
           <van-field
-              v-model="edges[id].label"
-              name="=weight"
-              label="Weight"
-              placeholder="Weight"
-              type="number"
+              v-model="state.labels[id]"
+              name="=label"
+              label="Label:Weight"
+              placeholder="Label:Weight"
+              type="text"
               class="edge-details__field"
+              @change="onLabelChange($event, id)"
+              :rules="[{validator, message: 'Sample value: A:10'}]"
           />
+
+          <van-field name="color" label="Color" class="edge-details__field">
+            <template #input>
+              <input v-model="edges[id].color" type="color"/>
+            </template>
+          </van-field>
         </van-form>
       </FormCollapsePanel>
     </div>
@@ -18,7 +26,7 @@
 </template>
 
 <script>
-import {computed, reactive} from "vue"
+import {computed, reactive, watch} from "vue"
 import {useStore} from "vuex"
 import FormCollapsePanel from "@/components/FormCollapsePanel"
 
@@ -60,10 +68,23 @@ export default {
       return "".concat(getNodeName(store.state.edges[edgeId].source), ' = ', getNodeName(store.state.edges[edgeId].target))
     }
 
+    const onLabelChange = (e, edgeId) => {
+      if (validator(e.target.value)) {
+        store.state.edges[edgeId].label = e.target.value
+      }
+    }
+
     const state = reactive({
-      label: '',
-      weight: 0
+      labels: []
     })
+
+    watch(selectedEdges, () => {
+      Object.keys(store.state.edges).map(edge => {
+        state.labels[edge] = store.state.edges[edge].label
+      })
+    })
+
+    const validator = val => /^[a-zA-Z]+:\d+$/.test(val)
 
     return {
       showEdgeDetails,
@@ -72,6 +93,8 @@ export default {
       edges,
       getNodeName,
       getTitle,
+      onLabelChange,
+      validator,
       state
     }
   }
@@ -86,8 +109,8 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
-  padding: 8px;
-  height: 100vh;
+  padding: 16px;
+  max-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -95,7 +118,7 @@ export default {
     width: 300px;
     padding: 0 8px;
     border-radius: 8px;
-    box-shadow: 0px 0px 7px -3px rgba(66, 68, 90, 1);
+    box-shadow: 0px 0px 7px -2px rgba(66, 68, 90, 1);
     background-color: white;
   }
 

@@ -14,6 +14,7 @@
           </div>
         </div>
       </GraphOption>
+
       <GraphOption>
         <template #title>
           Edges
@@ -104,7 +105,6 @@ export default {
     }
 
     const onFileChange = (event) => {
-      console.log(event.target.files)
       const file = event.target.files[0]
       event.target.value = null
 
@@ -112,8 +112,6 @@ export default {
 
       fr.onload = function (e) {
         const result = JSON.parse(e.target.result)
-        store.commit('clearNodes')
-        store.commit('clearEdges')
         store.state.nodes = result.nodes
         store.state.edges = result.edges
       }
@@ -123,7 +121,6 @@ export default {
 
     const importGraph = () => {
       document.getElementById('import-graph').click()
-      importFromJSON()
     }
 
     const exportGraph = () => {
@@ -145,11 +142,6 @@ export default {
       linkElement.setAttribute('download', exportFileDefaultName)
       linkElement.click()
     }
-
-    const importFromJSON = () => {
-      console.log('import from json')
-    }
-
 
     return {
       store,
@@ -173,10 +165,7 @@ export default {
 
 <style scoped lang="scss">
 .options {
-  margin: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin: 16px;
   position: fixed;
   top: 0;
   left: 0;
@@ -185,7 +174,7 @@ export default {
   &__sidebar {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
   }
 
   &__buttons {

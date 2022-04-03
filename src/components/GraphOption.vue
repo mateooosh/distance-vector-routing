@@ -32,8 +32,8 @@ export default {
 .option {
   padding: 16px 24px;
   border-radius: 8px;
-  border: 1px solid #adadad;
-  background-color: #f2f2f2;
+  box-shadow: 0px 0px 7px -2px rgba(66, 68, 90, 1);
+  background-color: white;
 
   &__title {
     color: #797979;
