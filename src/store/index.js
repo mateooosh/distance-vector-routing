@@ -26,9 +26,9 @@ export default createStore({
     },
     nextNodeIndex: 4,
     edges: {
-      edge1: {source: "router1", target: "router2", label: 1},
-      edge2: {source: "router2", target: "router3", label: 3},
-      edge3: {source: "router3", target: "router4", label: 4}
+      edge1: {source: "router1", target: "router2", label: "A: 1"},
+      edge2: {source: "router2", target: "router3", label: "B: 2"},
+      edge3: {source: "router3", target: "router4", label: "C: 3"}
     },
     nextEdgeIndex: 3,
     selectedNodes: [],
@@ -77,6 +77,14 @@ export default createStore({
 
     updateSelectedNodes(state, selectedNodes) {
       state.selectedNodes = selectedNodes
+    },
+
+    clearNodes(state) {
+      state.nodes = {}
+    },
+
+    clearEdges(state) {
+      state.edges = {}
     }
   },
   actions: {},

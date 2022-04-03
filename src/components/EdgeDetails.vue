@@ -1,7 +1,6 @@
 <template>
   <div class="edge-details">
     <div v-for="id in selectedEdges" :key="id">
-
       <FormCollapsePanel :title="getTitle(id)">
         <van-form>
           <van-field

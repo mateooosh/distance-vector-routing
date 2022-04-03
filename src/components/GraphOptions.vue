@@ -41,6 +41,21 @@
           </div>
         </div>
       </GraphOption>
+
+      <GraphOption>
+        <template #title>
+          Import/Export
+        </template>
+        <div class="options__buttons">
+          <div class="options__button options__button--active" @click="importGraph">
+            Import
+            <input @change="onFileChange" type="file" id="import-graph" style="display: none;"/>
+          </div>
+          <div class="options__button options__button--active" @click="exportGraph">
+            Export
+          </div>
+        </div>
+      </GraphOption>
     </div>
   </div>
 </template>
@@ -88,6 +103,54 @@ export default {
       store.commit('zoomOut')
     }
 
+    const onFileChange = (event) => {
+      console.log(event.target.files)
+      const file = event.target.files[0]
+      event.target.value = null
+
+      const fr = new FileReader()
+
+      fr.onload = function (e) {
+        const result = JSON.parse(e.target.result)
+        store.commit('clearNodes')
+        store.commit('clearEdges')
+        store.state.nodes = result.nodes
+        store.state.edges = result.edges
+      }
+
+      fr.readAsText(file)
+    }
+
+    const importGraph = () => {
+      document.getElementById('import-graph').click()
+      importFromJSON()
+    }
+
+    const exportGraph = () => {
+      const result = {
+        edges: store.state.edges,
+        nodes: store.state.nodes
+      }
+
+      exportToJSON(result)
+    }
+
+    const exportToJSON = json => {
+      const dataStr = JSON.stringify(json)
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+      const exportFileDefaultName = 'graph.json'
+      const linkElement = document.createElement('a')
+
+      linkElement.setAttribute('href', dataUri)
+      linkElement.setAttribute('download', exportFileDefaultName)
+      linkElement.click()
+    }
+
+    const importFromJSON = () => {
+      console.log('import from json')
+    }
+
+
     return {
       store,
       addNode,
@@ -96,6 +159,9 @@ export default {
       removeEdge,
       zoomIn,
       zoomOut,
+      importGraph,
+      exportGraph,
+      onFileChange,
       canRemoveNode,
       canAddEdge,
       canRemoveEdge,
