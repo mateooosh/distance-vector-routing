@@ -5,7 +5,6 @@ import store from './store'
 import VNetworkGraph from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import {Switch, Button, Collapse, CollapseItem, Field, Form} from 'vant'
-
 createApp(App).use(store).use(router).use(VNetworkGraph)
   .use(Switch)
   .use(Button)

@@ -6,12 +6,12 @@
           <van-field
               v-model="state.labels[id]"
               name="=label"
-              label="Label:Weight"
+              label="Label"
               placeholder="Label:Weight"
               type="text"
               class="edge-details__field"
               @change="onLabelChange($event, id)"
-              :rules="[{validator, message: 'Sample value: A:10'}]"
+              :rules="[{validator}]"
           />
 
           <van-field name="color" label="Color" class="edge-details__field">
@@ -84,7 +84,7 @@ export default {
       })
     })
 
-    const validator = val => /^[a-zA-Z]+:\d+$/.test(val)
+    const validator = val => val.length > 0
 
     return {
       showEdgeDetails,

@@ -57,6 +57,20 @@
           </div>
         </div>
       </GraphOption>
+
+      <GraphOption>
+        <template #title>
+          Step: {{ store.state.step }}
+        </template>
+        <div class="options__buttons">
+          <div class="options__button" :class="{'options__button--active' : canPrevStep}" @click="prevStep">
+            Previous
+          </div>
+          <div class="options__button options__button--active" @click="nextStep">
+            Next
+          </div>
+        </div>
+      </GraphOption>
     </div>
   </div>
 </template>
@@ -79,6 +93,8 @@ export default {
     const canRemoveEdge = computed(() => !!store.state.selectedEdges.length)
 
     const canZoomOut = computed(() => store.state.zoom > 1)
+
+    const canPrevStep = computed(() => store.state.step > 0)
 
     const addNode = () => {
       store.commit('addNode')
@@ -104,16 +120,25 @@ export default {
       store.commit('zoomOut')
     }
 
+    const nextStep = () => {
+      store.commit('nextStep')
+    }
+
+    const prevStep = () => {
+      store.commit('prevStep')
+    }
+
     const onFileChange = (event) => {
       const file = event.target.files[0]
       event.target.value = null
 
       const fr = new FileReader()
 
-      fr.onload = function (e) {
+      fr.onload = e => {
         const result = JSON.parse(e.target.result)
         store.state.nodes = result.nodes
         store.state.edges = result.edges
+        store.commit('initialize')
       }
 
       fr.readAsText(file)
@@ -151,13 +176,16 @@ export default {
       removeEdge,
       zoomIn,
       zoomOut,
+      nextStep,
+      prevStep,
       importGraph,
       exportGraph,
       onFileChange,
       canRemoveNode,
       canAddEdge,
       canRemoveEdge,
-      canZoomOut
+      canZoomOut,
+      canPrevStep
     }
   }
 }

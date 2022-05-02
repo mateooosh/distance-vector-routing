@@ -19,6 +19,8 @@ import {computed} from "vue"
 export default {
   setup() {
     const store = useStore()
+    store.commit('initialize')
+
     const ACTIVE = "#01c501"
     const INACTIVE = "#ff0000"
 
@@ -96,7 +98,7 @@ export default {
         },
       },
       view: {
-        // scrollingObjects: true,
+        scrollingObjects: true,
         minZoomLevel: 1,
         mouseWheelZoomEnabled: false
       }
