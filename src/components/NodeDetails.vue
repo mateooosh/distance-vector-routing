@@ -45,7 +45,7 @@ import {computed} from "vue"
 import {useStore} from "vuex"
 import FormCollapsePanel from "@/components/FormCollapsePanel"
 // import {BIconXLg} from "bootstrap-icons-vue"
-import {DIRECTIONS} from "@/utils/Enums"
+import {DIRECTIONS} from "@/utils/enums"
 import RoutingTable from "@/components/RoutingTable"
 
 export default {

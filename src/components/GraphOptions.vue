@@ -198,6 +198,11 @@ export default {
   top: 0;
   left: 0;
   z-index: 10;
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 
   &__sidebar {
     display: flex;

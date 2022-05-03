@@ -1,6 +1,5 @@
 import {createStore} from 'vuex'
-
-const LETTERS = Array.from(Array(26)).map((e, i) => String.fromCharCode(i + 65))
+import {convertToNumberingScheme} from "@/utils/utils";
 
 export default createStore({
   state: {
@@ -63,7 +62,7 @@ export default createStore({
         "color": "#4466cc"
       }
     },
-    nextEdgeIndex: 3,
+    nextEdgeIndex: 5,
     selectedNodes: [],
     selectedEdges: [],
     zoom: 1,
@@ -97,12 +96,12 @@ export default createStore({
     addEdge(state) {
       state.nextEdgeIndex++
       let edgeId = `edge${state.nextEdgeIndex}`
-      let label = `${LETTERS[(state.nextEdgeIndex - 1) % LETTERS.length]}`
+      let label = convertToNumberingScheme(state.nextEdgeIndex)
 
       while (Object.keys(state.edges).includes(edgeId)) {
         state.nextEdgeIndex++
         edgeId = `edge${state.nextEdgeIndex}`
-        label = `${LETTERS[(state.nextEdgeIndex - 1) % LETTERS.length]}`
+        label = convertToNumberingScheme(state.nextEdgeIndex)
       }
 
       state.edges[edgeId] = {
@@ -146,7 +145,6 @@ export default createStore({
       state.routingTables = []
       state.step = 0
       state.routingTables.push({})
-      console.log('INITIALIZE', state.routingTables)
       Object.keys(state.nodes).map(nodeKey => {
         let arr = []
 
