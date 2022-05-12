@@ -8,7 +8,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="row in props.routingTable" :key="row">
+    <tr v-for="row in props.routingTable" :key="row" :class="marked(row.destination) ? 'marked' : ''">
       <td>{{ store.state.nodes[row.destination].name }}</td>
       <td>{{ row.distance === Infinity ? '∞' : row.distance }}</td>
       <td>{{ row.nextHop }}</td>
@@ -26,7 +26,15 @@ export default {
   props: {
     'id': String,
     'node': Object,
-    'routingTable': Object
+    'routingTable': Object,
+    'mark': {
+      type: Boolean,
+      default: false
+    },
+    'prevStep': {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup(props) {
@@ -43,7 +51,14 @@ export default {
       }
     })
 
-    return {store, props, step}
+    const routerToMark = computed(() => store.state.routerToMark)
+    const routerToMarkInPrevStep = computed(() => store.state.routerToMarkInPrevStep)
+
+    const marked = (nodeKey) => {
+      return props.mark && ((props.prevStep && routerToMark.value === nodeKey) || (!props.prevStep && routerToMarkInPrevStep.value === nodeKey))
+    }
+
+    return {store, props, step, routerToMark, routerToMarkInPrevStep, marked}
   }
 }
 </script>
@@ -52,7 +67,7 @@ export default {
 table {
   border-radius: 10px;
   border-collapse: collapse;
-  margin: 4px 0;
+  margin: 8px 0;
   font-size: 13px;
   width: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -88,5 +103,9 @@ table {
       }
     }
   }
+}
+
+.marked {
+  background-color: yellow !important;
 }
 </style>

@@ -54,7 +54,8 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 800;
+  color: black;
 }
 </style>

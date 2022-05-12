@@ -11,17 +11,34 @@
           </ul>
         </div>
       </div>
+
       <div v-if="state.microStep > 0" class="explanation__block">
+        Routing table from previous step
+        <RoutingTable :id="props.nodeKey"
+                      :node="props.node"
+                      :routing-table="store.state.routingTables[store.state.step - 1][props.nodeKey]"
+                      mark/>
+      </div>
+
+      <div v-if="state.microStep > 1" class="explanation__block">
         <div v-for="(table, index) in explanation.receivedTables" :key="index">
           Routing table received from: {{ store.state.nodes[explanation.neighbours[index]].name }}
-          <RoutingTable :id="props.nodeKey" :node="props.node" :routing-table="table"/>
+          <RoutingTable :id="props.nodeKey" :node="props.node" :routing-table="table" mark prev-step/>
         </div>
       </div>
-      <div v-if="state.microStep > 1" class="explanation__block">
-        {{ props.node.name }} prepares routing table:
-        <div v-for="(item, index) in tablesGroupedByDestination" :key="index" @mouseover="onMouseOver">
-          Cost {{ props.node.name }} -> {{ store.state.nodes[item[0]].name }} = {{ getCostText(item[0]) }}
+      <div v-if="state.microStep > 2" class="explanation__block">
+        <div v-for="(item, index) in tablesGroupedByDestination" :key="index">
+          <span @mouseover="onMouseOver(item)" :class="routerToMark === item[0] ? 'marked' : ''">
+            Cost {{ props.node.name }} -> {{ store.state.nodes[item[0]].name }} = {{ getCostText(item[0]) }}
+          </span>
         </div>
+      </div>
+
+      <div v-if="state.microStep > 3" class="explanation__block">
+        Updated routing table:
+        <RoutingTable :id="props.nodeKey"
+                      :node="props.node"
+                      :routing-table="store.state.routingTables[store.state.step][props.nodeKey]"/>
       </div>
     </template>
 
@@ -126,11 +143,19 @@ export default {
       state.microStep = 0
     })
 
-    const onMouseOver = (el) => {
-      console.log('mouseover', el)
+    watch(() => state.microStep, () => {
+      store.commit('markRouter', null)
+      store.commit('markRouterPrevStep', null)
+    })
+
+    const onMouseOver = (item) => {
+      store.commit('markRouter', item[0])
+      store.commit('markRouterPrevStep', explanation.value.calculating[item[0]].nextHopKey)
     }
 
-    const maxSteps = computed(() => store.state.step !== 0 ? 2 : 1)
+    const routerToMark = computed(() => store.state.routerToMark)
+
+    const maxSteps = computed(() => store.state.step !== 0 ? 4 : 1)
     const canPrevStep = computed(() => state.microStep > 0)
     const canNextStep = computed(() => state.microStep < maxSteps.value)
 
@@ -149,7 +174,8 @@ export default {
       canNextStep,
       maxSteps,
       routingTable,
-      onMouseOver
+      onMouseOver,
+      routerToMark
     }
   }
 }
@@ -163,9 +189,7 @@ export default {
   color: #646566;
 
   &__block {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+
   }
 
   &__table {
@@ -236,4 +260,7 @@ export default {
   }
 }
 
+.marked {
+  background-color: yellow !important;
+}
 </style>

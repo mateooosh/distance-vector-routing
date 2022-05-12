@@ -68,7 +68,9 @@ export default createStore({
     zoom: 1,
     step: 0,
     routingTables: [],
-    explanation: []
+    explanation: [],
+    routerToMark: null,
+    routerToMarkInPrevStep: null
   },
   getters: {},
   mutations: {
@@ -140,6 +142,14 @@ export default createStore({
 
     clearEdges(state) {
       state.edges = {}
+    },
+
+    markRouter(state, nodeId) {
+      state.routerToMark = nodeId
+    },
+
+    markRouterPrevStep(state, nodeId) {
+      state.routerToMarkInPrevStep = nodeId
     },
 
     initialize(state) {
@@ -256,6 +266,7 @@ export default createStore({
             calculating[tables[1][0].destination].distances = distances
             calculating[tables[1][0].destination].min = min
             calculating[tables[1][0].destination].nextHop = nextHop
+            calculating[tables[1][0].destination].nextHopKey = tables[1][indexOfSum].nodeKey
             explanation.calculating = calculating
 
             state.routingTables[state.step][nodeKey][indexOfTable].distance = distance
