@@ -6,11 +6,16 @@
       </template>
       <slot></slot>
     </van-collapse-item>
+    <van-collapse-item name="2">
+      <template #title>
+        <div class="title">Explanation</div>
+      </template>
+      <slot name="explanation"></slot>
+    </van-collapse-item>
   </van-collapse>
 </template>
 
 <script>
-
 
 import {computed, reactive} from "vue"
 import {useStore} from "vuex"
@@ -52,5 +57,4 @@ export default {
   font-size: 17px;
   font-weight: 600;
 }
-
 </style>

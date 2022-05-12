@@ -5,25 +5,25 @@ export default createStore({
   state: {
     nodes: {
       "router1": {
-        "name": "Router 1",
+        "name": "R1",
         "color": "#4466cc",
         "active": true,
         "direction": "south"
       },
       "router2": {
-        "name": "Router 2",
+        "name": "R2",
         "color": "#4466cc",
         "active": true,
         "direction": "south"
       },
       "router3": {
-        "name": "Router 3",
+        "name": "R3",
         "color": "#4466cc",
         "active": true,
         "direction": "south"
       },
       "router4": {
-        "name": "Router 4",
+        "name": "R4",
         "color": "#4466cc",
         "active": true,
         "direction": "south"
@@ -67,19 +67,20 @@ export default createStore({
     selectedEdges: [],
     zoom: 1,
     step: 0,
-    routingTables: []
+    routingTables: [],
+    explanation: []
   },
   getters: {},
   mutations: {
     addNode(state) {
       state.nextNodeIndex++
       let nodeId = `router${state.nextNodeIndex}`
-      let name = `Router ${state.nextNodeIndex}`
+      let name = `R${state.nextNodeIndex}`
 
       while (Object.keys(state.nodes).includes(nodeId)) {
         state.nextNodeIndex++
         nodeId = `router${state.nextNodeIndex}`
-        name = `Router ${state.nextNodeIndex}`
+        name = `R${state.nextNodeIndex}`
       }
 
       state.nodes[nodeId] = {name, color: '#4466cc', active: true, direction: 'south'}
@@ -143,8 +144,10 @@ export default createStore({
 
     initialize(state) {
       state.routingTables = []
-      state.step = 0
       state.routingTables.push({})
+      state.explanation = []
+      state.explanation.push({})
+      state.step = 0
       Object.keys(state.nodes).map(nodeKey => {
         let arr = []
 
@@ -191,20 +194,28 @@ export default createStore({
       state.routingTables.push({})
       state.routingTables[state.step] = JSON.parse(JSON.stringify(state.routingTables[state.step - 1]))
 
-      Object.keys(state.nodes).map(nodeKey => {
+      state.explanation.push({})
+
+      const turnedOnNodes = Object.fromEntries(Object.entries(state.nodes).filter(node => node[1].active))
+
+      Object.keys(turnedOnNodes).map(nodeKey => {
         const routingTable = state.routingTables[state.step - 1][nodeKey]
+        let explanation = {}
 
         const connectedEdges = Object.entries(state.edges).filter(edge => {
           return edge[1].source === nodeKey || edge[1].target === nodeKey
         })
 
-        const neighbours = connectedEdges.map(edge => {
-          return edge[1].target === nodeKey ? edge[1].source : edge[1].target
-        })
+        const neighbours = connectedEdges
+          .map(edge => edge[1].target === nodeKey ? edge[1].source : edge[1].target)
+          .filter(nodeId => state.nodes[nodeId].active)
+
+        explanation.neighbours = neighbours
 
         const receivedTables = neighbours.map(neighbour => {
           return state.routingTables[state.step - 1][neighbour]
         })
+        explanation.receivedTables = receivedTables
 
         const groupedReceivedTables = {}
         receivedTables.map(table => {
@@ -214,17 +225,24 @@ export default createStore({
             groupedReceivedTables[row.destination].push(row)
           })
         })
+        explanation.groupedReceivedTables = groupedReceivedTables
+
+        const calculating = {}
 
         Object.entries(groupedReceivedTables).map(tables => {
           if (nodeKey !== tables[1][0].destination) {
+
+            calculating[tables[1][0].destination] = {}
             const sums = []
+            const distances = []
             tables[1].map(table => {
               const distance1 = routingTable.find(item => item.destination === table.nodeKey).distance
               const distance2 = table.distance
-
               let sum = distance1 + distance2
               sum = Number.isInteger(sum) ? sum : Number.POSITIVE_INFINITY
               sums.push(sum)
+
+              distances.push([distance1, distance2])
             })
 
             const min = Math.min(...sums)
@@ -234,10 +252,18 @@ export default createStore({
 
             const indexOfTable = state.routingTables[state.step][nodeKey].findIndex(table => table.destination === tables[0])
 
+            calculating[tables[1][0].destination].sums = sums
+            calculating[tables[1][0].destination].distances = distances
+            calculating[tables[1][0].destination].min = min
+            calculating[tables[1][0].destination].nextHop = nextHop
+            explanation.calculating = calculating
+
             state.routingTables[state.step][nodeKey][indexOfTable].distance = distance
             state.routingTables[state.step][nodeKey][indexOfTable].nextHop = nextHop
           }
         })
+        state.explanation[state.step][nodeKey] = explanation
+        console.log(explanation)
       })
     },
 

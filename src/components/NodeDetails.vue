@@ -1,40 +1,42 @@
 <template>
-  <div class="node-details">
-    <div v-for="id in selectedNodes" :key="id">
-     <FormCollapsePanel :title="nodes[id].name">
-       <van-form>
-         <van-field
-             v-model="nodes[id].name"
-             name="=name"
-             label="Name"
-             placeholder="Name"
-             label-width="120px"
-             class="node-details__field"
-         />
+  <div class="details">
+    <FormCollapsePanel v-if="!!nodes[props.id]?.name" :title="nodes[props.id]?.name">
+      <van-form>
+        <van-field
+            v-model="nodes[props.id].name"
+            name="=name"
+            label="Name"
+            placeholder="Name"
+            label-width="120px"
+            class="details__field"
+        />
 
-         <van-field name="active" label="Active" label-width="120px" class="node-details__field">
-           <template #input>
-             <van-switch v-model="nodes[id].active" active-color="#01c501" inactive-color="#ff0000" size="20px"/>
-           </template>
-         </van-field>
+        <van-field name="active" label="Active" label-width="120px" class="details__field">
+          <template #input>
+            <van-switch v-model="nodes[props.id].active" active-color="#01c501" inactive-color="#ff0000" size="20px"/>
+          </template>
+        </van-field>
 
-         <van-field name="color" label="Color" label-width="120px" class="node-details__field">
-           <template #input>
-             <input v-model="nodes[id].color" type="color"/>
-           </template>
-         </van-field>
+        <van-field name="color" label="Color" label-width="120px" class="details__field">
+          <template #input>
+            <input v-model="nodes[props.id].color" type="color"/>
+          </template>
+        </van-field>
 
-         <van-field name="placement" label="Label placement" label-width="120px" class="node-details__field">
-           <template #input>
-             <select class="node-details__select" v-model="nodes[id].direction">
-               <option v-for="dir in DIRECTIONS" :key="dir" :value="dir">{{dir}}</option>
-             </select>
-           </template>
-         </van-field>
-       </van-form>
-       <RoutingTable :id="id" :node="nodes[id]"/>
-     </FormCollapsePanel>
-    </div>
+        <van-field name="placement" label="Label placement" label-width="120px" class="details__field">
+          <template #input>
+            <select class="node-details__select" v-model="nodes[props.id].direction">
+              <option v-for="dir in DIRECTIONS" :key="dir" :value="dir">{{ dir }}</option>
+            </select>
+          </template>
+        </van-field>
+      </van-form>
+      <div class="details__title">Routing table</div>
+      <RoutingTable :id="props.id" :node="nodes[props.id]" :routing-table="routingTable"/>
+      <template #explanation>
+        <RoutingTableExplanation :nodeKey="props.id" :node="nodes[props.id]"/>
+      </template>
+    </FormCollapsePanel>
   </div>
 </template>
 
@@ -47,27 +49,23 @@ import FormCollapsePanel from "@/components/FormCollapsePanel"
 // import {BIconXLg} from "bootstrap-icons-vue"
 import {DIRECTIONS} from "@/utils/enums"
 import RoutingTable from "@/components/RoutingTable"
+import RoutingTableExplanation from "@/components/RoutingTableExplanation"
 
 export default {
+  props: {
+    'id': String
+  },
   components: {
+    RoutingTableExplanation,
     RoutingTable,
     FormCollapsePanel
     // BIconXLg
   },
-  setup() {
+  setup(props) {
+
     const store = useStore()
 
     const showNodeDetails = computed(() => !!store.state.selectedNodes.length)
-
-    const selectedNodes = computed({
-      get() {
-        return store.state.selectedNodes
-      },
-
-      set(newValue) {
-        store.state.selectedNodes = newValue
-      }
-    })
 
     const nodes = computed({
       get() {
@@ -79,36 +77,37 @@ export default {
       }
     })
 
+    const step = computed({
+      get() {
+        return store.state.step
+      },
+
+      set(newValue) {
+        store.state.step = newValue
+      }
+    })
+
+    const routingTable = computed(() => {
+      return store.state.routingTables[step.value][props.id]
+    })
+
     return {
       showNodeDetails,
-      selectedNodes,
       store,
       nodes,
-      DIRECTIONS
+      DIRECTIONS,
+      routingTable,
+      props
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.node-details {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding: 16px;
-  max-height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+.details {
 
-  > div {
-    width: 300px;
-    padding: 0 8px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 7px -2px rgba(66, 68, 90, 1);
-    background-color: white;
+  &__title {
+    color: #646566;
   }
 
   &__field {
@@ -123,5 +122,29 @@ export default {
       padding: 10px;
     }
   }
+
+  &__button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #d5d5d5;
+    background-color: #0079d0;
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.block {
+  width: 120px;
+  height: 120px;
+  background-color: #fff;
 }
 </style>

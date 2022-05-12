@@ -1,14 +1,20 @@
 <template>
-  <div class="routing-table">
-    <div class="routing-table__header">Destination</div>
-    <div class="routing-table__header">Distance</div>
-    <div class="routing-table__header">Next hop</div>
-    <template v-for="row in routingTable" :key="row">
-      <div>{{ store.state.nodes[row.destination].name }}</div>
-      <div>{{ row.distance === Infinity ? '∞' : row.distance }}</div>
-      <div>{{ row.nextHop }}</div>
-    </template>
-  </div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Destination</th>
+      <th>Distance</th>
+      <th>Next hop</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="row in props.routingTable" :key="row">
+      <td>{{ store.state.nodes[row.destination].name }}</td>
+      <td>{{ row.distance === Infinity ? '∞' : row.distance }}</td>
+      <td>{{ row.nextHop }}</td>
+    </tr>
+    </tbody>
+  </table>
 </template>
 
 <script>
@@ -17,10 +23,11 @@ import {useStore} from "vuex"
 import {computed} from "vue"
 
 export default {
-  props: [
-    'id',
-    'node'
-  ],
+  props: {
+    'id': String,
+    'node': Object,
+    'routingTable': Object
+  },
 
   setup(props) {
 
@@ -36,37 +43,50 @@ export default {
       }
     })
 
-    const routingTable = computed(() => {
-      return store.state.routingTables[step.value][props.id]
-    })
-
-    return {store, props, routingTable, step}
+    return {store, props, step}
   }
 }
 </script>
 
 <style scoped lang="scss">
-.routing-table {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px;
-  padding-top: 16px;
+table {
+  border-radius: 10px;
+  border-collapse: collapse;
+  margin: 4px 0;
+  font-size: 13px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 
-  > div:nth-child(3n) {
-    text-align: right;
+  thead {
+    tr {
+      background-color: #0079d0;
+      color: #ffffff;
+    }
   }
 
-  > div:nth-child(3n + 1) {
-    text-align: left;
-  }
-
-  > div:nth-child(3n + 2) {
+  th {
+    padding: 6px 2px;
     text-align: center;
   }
 
-  &__header {
-    font-weight: 700;
+  td {
     color: #313131;
+    text-align: center;
+    padding: 2px;
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #dddddd;
+
+      &:nth-of-type(even) {
+        background-color: #f3f3f3;
+      }
+
+      &:last-of-type {
+        border-bottom: 2px solid #0079d0;
+      }
+    }
   }
 }
 </style>
