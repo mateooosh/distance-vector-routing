@@ -88,7 +88,16 @@ export default {
 
     const canRemoveNode = computed(() => !!store.state.selectedNodes.length)
 
-    const canAddEdge = computed(() => store.state.selectedNodes.length === 2)
+    const canAddEdge = computed(() => {
+      const index = Object.entries(store.state.edges).findIndex(edge => {
+        return edge[1].target === store.state.selectedNodes[0]
+            && edge[1].source === store.state.selectedNodes[1]
+            || edge[1].source === store.state.selectedNodes[0]
+            && edge[1].target === store.state.selectedNodes[1]
+      })
+
+      return store.state.selectedNodes.length === 2 && index === -1
+    })
 
     const canRemoveEdge = computed(() => !!store.state.selectedEdges.length)
 

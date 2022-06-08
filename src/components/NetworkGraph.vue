@@ -72,10 +72,7 @@ export default {
       edge: {
         selectable: true,
         normal: {
-          color: edge => edge.color,
-          // dasharray: edge =>
-          //     store.state.nodes[edge.source].active && store.state.nodes[edge.target].active ? 4 : 0,
-          // animate: edge => store.state.nodes[edge.source].active && store.state.nodes[edge.target].active
+          color: edge => edge.color
         },
         hover: {
           color: edge => edge.color

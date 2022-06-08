@@ -11,12 +11,6 @@
             class="details__field"
         />
 
-        <van-field name="active" label="Active" label-width="120px" class="details__field">
-          <template #input>
-            <van-switch v-model="nodes[props.id].active" active-color="#01c501" inactive-color="#ff0000" size="20px"/>
-          </template>
-        </van-field>
-
         <van-field name="color" label="Color" label-width="120px" class="details__field">
           <template #input>
             <input v-model="nodes[props.id].color" type="color"/>

@@ -206,9 +206,7 @@ export default createStore({
 
       state.explanation.push({})
 
-      const turnedOnNodes = Object.fromEntries(Object.entries(state.nodes).filter(node => node[1].active))
-
-      Object.keys(turnedOnNodes).map(nodeKey => {
+      Object.keys(state.nodes).map(nodeKey => {
         const routingTable = state.routingTables[state.step - 1][nodeKey]
         let explanation = {}
 
@@ -216,9 +214,7 @@ export default createStore({
           return edge[1].source === nodeKey || edge[1].target === nodeKey
         })
 
-        const neighbours = connectedEdges
-          .map(edge => edge[1].target === nodeKey ? edge[1].source : edge[1].target)
-          .filter(nodeId => state.nodes[nodeId].active)
+        const neighbours = connectedEdges.map(edge => edge[1].target === nodeKey ? edge[1].source : edge[1].target)
 
         explanation.neighbours = neighbours
 
@@ -274,7 +270,6 @@ export default createStore({
           }
         })
         state.explanation[state.step][nodeKey] = explanation
-        console.log(explanation)
       })
     },
 

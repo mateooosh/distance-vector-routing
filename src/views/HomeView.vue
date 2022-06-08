@@ -17,7 +17,7 @@ import GraphOptions from "@/components/GraphOptions"
 import NodeDetails from "@/components/NodeDetails"
 import EdgeDetails from "@/components/EdgeDetails"
 import {useStore} from "vuex"
-import {computed} from "vue"
+import {computed, onMounted} from "vue"
 
 export default {
   name: 'HomeView',
@@ -29,6 +29,21 @@ export default {
   },
   setup() {
     const store = useStore()
+
+    onMounted(() => {
+      document.addEventListener('keydown', event => {
+        const key = event.key
+        if (key === 'Delete') {
+          if (store.state.selectedEdges) {
+            store.commit('removeEdge')
+          }
+
+          if (store.state.selectedNodes) {
+            store.commit('removeNode')
+          }
+        }
+      })
+    })
 
     const selectedNodes = computed({
       get() {
