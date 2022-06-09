@@ -8,6 +8,7 @@ App shows how distance vector routing algorithm works step by step with explanat
 * VUEX
 * SCSS
 * v-network-graph
+* Vant
 
 ## Demo
 Here is a working live demo: [Link](https://mateooosh.github.io/distance-vector-routing)
