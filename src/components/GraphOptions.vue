@@ -114,7 +114,8 @@ export default {
     }
 
     const addEdge = () => {
-      store.commit('addEdge')
+      if (canAddEdge.value)
+        store.commit('addEdge')
     }
 
     const removeEdge = () => {
