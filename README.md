@@ -1,5 +1,5 @@
 # distance-vector-routing
-App that shows how distance vector routing algorithm works step by step with explanation. Graph is fully modifable. There is option to export/import graph from JSON file.
+App shows how distance vector routing algorithm works step by step with explanation. Graph is fully modifable. There is option to export/import graph from JSON file.
 
 ## Technologies
  Project is created with:
